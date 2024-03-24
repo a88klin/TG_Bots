@@ -1,0 +1,14 @@
+BOT_TOKEN=...
+OPENAI_API_KEY=...
+
+ADMIN_IDS=[0,]
+AllOWED_IDS=[0,]
+
+MONGODB_HOST=mongodb://localhost:27017/
+PASSWORD=your_password
+USER=your_user
+DATABASE=your_database
+
+VACANCIES_JSON_FILES=data/vacancies_json
+RESUMES_JSON_FILES=data/resumes_json
+DB_INDEX_FILES=data/db_indexes
