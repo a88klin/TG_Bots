@@ -33,7 +33,7 @@ async def processing_resume_and_similarity_vacancies(resume_file_name, db_index,
         experience = '' # Опыт
         for n, place in enumerate(resume['experience']):
             experience += f"Job experience {n+1}: Position - {place['position']}. \
-                            Job description {n+1}: {place['description']} "
+                            Description of previous job {n+1}: {place['description']} "
 
         languages = '' # Языки
         for lang in resume['language']:
@@ -119,13 +119,13 @@ async def get_answer_gpt(resume_file_name, k=5):
         print('Ex.4:', ex)
         return
 
-    # Поля вакансии для сравнения и вопросов к ChatGPT **********************************************
+    # Получаем Поля вакансии для сравнения и вопросов к ChatGPT **********************************************
     vacancy = await vacancies_collection.find_one({'_id': scores_ids[1][0]}) # 1-я ближайшая вакансия из найденных
 
     position_skills_en = vacancy['position_skills_en']
-    requirements1_en = vacancy['requirements2_en']
-    requirements2_en = vacancy['levels_en']
-    levels_en = vacancy['salary_en']
+    requirements1_en = vacancy['requirements1_en']
+    requirements2_en = vacancy['requirements2_en']
+    levels_en = vacancy['levels_en']
     salary_en = vacancy['salary_en']
     format_en = vacancy['format_en']
     location_en = vacancy['location_en']
@@ -141,18 +141,21 @@ async def get_answer_gpt(resume_file_name, k=5):
                                          tasks_en)
 
     # ************************************************************************************
-    system = prompts.system_01()
-    # assistant = prompts.assistant_01()
-    message_content = prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)
-    question = prompts.question_01(r2, levels_en + salary_en + format_en + location_en)
-    message = [{"role": "system", "content": system},
-               # {'role': 'assistant', 'content': assistant},
-               {"role": "user", "content": f"{message_content}\n{question}"}]
+    message = [{"role": "system", "content": prompts.system_01()},
+               # {'role': 'assistant', 'content': prompts.assistant_01()},
+               {"role": "user",
+                "content": f"{prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)}"
+                           f"\n{prompts.question_01()}"
+                           f"\n{prompts.question_02()}"
+                           f"\n{prompts.question_03()}"
+                           f"\n{prompts.question_04()}"
+                           f"\n{prompts.question_05()}"
+                }]
     # response = None
     response = await answer_gpt(message, temp=0.3)
     return f'\n\n{scores_ids[0]}, ' \
            f'\n\n{scores_ids[1]}, ' \
            f'\n-----------------------------------------------' \
            f'\n\n{resume_file_name}, ' \
-           f'\n\nЗаключение к 1-й вакансии:' \
+           f'\n\nЗаключение к 1-й вакансии {scores_ids[1][0]}:' \
            f'\n\n{response}'

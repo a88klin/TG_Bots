@@ -12,7 +12,7 @@ router = Router()
 # Хэндлер на команду "/start"
 @router.message(Command(commands=["start"]))
 async def process_start_command(message: Message):
-    await message.answer('Здравствуйте! Загрузите своё резюме в фомате JSON')
+    await message.answer('Здравствуйте! Загрузите резюме в фомате JSON')
 
 
 # Хэндлер на отправленный Json файл резюме
@@ -23,7 +23,7 @@ async def download_json(message: Message, bot: Bot):
         if received_file not in os.listdir(RESUMES_JSON_FILES):
             await bot.download(message.document,
                                destination=f"{RESUMES_JSON_FILES}/{received_file}")
-        await message.answer('Ваше резюме получено. Идет поиск подходящих вакансий...')
+        await message.answer('Резюме получено. Идет поиск подходящих вакансий...')
         answer_ = await get_answer_gpt(received_file)
         # print(answer_)
         await message.answer(answer_)
