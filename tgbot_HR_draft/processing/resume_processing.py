@@ -119,16 +119,32 @@ async def get_answer_gpt(resume_file_name, k=5):
         print('Ex.4:', ex)
         return
 
-    vacancy = await vacancies_collection.find_one({'_id': scores_ids[1][0]}) # 1я вакансия из списка
-    #v_line_1_en. Position, Skills, M.Requirements, Add.Requirements
-    #v_line_2_en. Levels, WorkFormat, Location, Salary
-    #v_line_3_en. Project Tasks
-    chosen_vacancy = vacancy['line_1_en'] + vacancy['line_2_en'] + vacancy['line_3_en']
+    # Поля вакансии для сравнения и вопросов к ChatGPT **********************************************
+    vacancy = await vacancies_collection.find_one({'_id': scores_ids[1][0]}) # 1-я ближайшая вакансия из найденных
 
+    position_skills_en = vacancy['position_skills_en']
+    requirements1_en = vacancy['requirements2_en']
+    requirements2_en = vacancy['levels_en']
+    levels_en = vacancy['salary_en']
+    salary_en = vacancy['salary_en']
+    format_en = vacancy['format_en']
+    location_en = vacancy['location_en']
+    tasks_en = vacancy['tasks_en']
+
+    chosen_vacancy = re.sub(r'\s+', ' ', position_skills_en +
+                                         requirements1_en +
+                                         requirements2_en +
+                                         levels_en +
+                                         salary_en +
+                                         format_en +
+                                         location_en +
+                                         tasks_en)
+
+    # ************************************************************************************
     system = prompts.system_01()
     # assistant = prompts.assistant_01()
     message_content = prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)
-    question = prompts.question_01(r2, vacancy['line_2_en'])
+    question = prompts.question_01(r2, levels_en + salary_en + format_en + location_en)
     message = [{"role": "system", "content": system},
                # {'role': 'assistant', 'content': assistant},
                {"role": "user", "content": f"{message_content}\n{question}"}]

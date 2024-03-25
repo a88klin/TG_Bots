@@ -15,14 +15,14 @@ def message_content_01(resume, vacancy):
 def assistant_01():
     pass
 
-def question_01(r2, v2):
+def question_01(resume_part, vacansy_part):
     return re.sub(r'\s+', ' ', f"""Answer the questions:
     1. What is the percentage from 0 to 100 of matching skills in the candidate's resume compared
-       to the necessary skills in the vacancy? 
-    2. What skills and competencies does the candidate lack in the resume compared to the necessary
-       skills and competencies in the vacancy?
-    3. Compare and give a conclusion about the compliance and differences in the resume part: {r2}
-       and the vacancy part: {v2}. Compare only what is logical to compare.
+       to the necessary skills in the vacancy? Please, answer is short in one sentence. 
+    2. What SKILLS and competencies does the candidate lack in the resume compared to the necessary
+       SKILLS and competencies in the vacancy?
+    3. Summarize and give a conclusion about the resume part: {resume_part} and the vacancy part: 
+       {vacansy_part}. You can use a comparison, but compare only what is logical to compare.
 
     Answer all questions in Russian, with the exception of the words denoting the candidate's skills,
     if you write about them. So, answer in Russian, but if you use words denoting the candidate's skills,
