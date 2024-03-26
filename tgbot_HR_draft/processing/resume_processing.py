@@ -86,7 +86,7 @@ async def processing_resume_and_similarity_vacancies(resume_file_name, db_index,
         r2 = resume['line_2_en']
         # print(r2) # Salary, Languages, Job schedule, Location, Relocation, Total experience
         r3 = resume['line_3_en']
-        # print(r2) # Experience (position + description)
+        # print(r3) # Experience (position + description)
         return ids_and_scores(r1 + r2 + r3, db_index, k=k), r1, r2, r3
     except Exception as ex:
         print('Ex.3:', ex)
@@ -122,27 +122,19 @@ async def get_answer_gpt(resume_file_name, k=5):
     # Получаем Поля вакансии для сравнения и вопросов к ChatGPT **********************************************
     vacancy = await vacancies_collection.find_one({'_id': scores_ids[1][0]}) # 1-я ближайшая вакансия из найденных
 
-    position_skills_en = vacancy['position_skills_en']
-    requirements1_en = vacancy['requirements1_en']
-    requirements2_en = vacancy['requirements2_en']
-    levels_en = vacancy['levels_en']
-    salary_en = vacancy['salary_en']
-    format_en = vacancy['format_en']
-    location_en = vacancy['location_en']
-    tasks_en = vacancy['tasks_en']
-
-    chosen_vacancy = re.sub(r'\s+', ' ', position_skills_en +
-                                         requirements1_en +
-                                         requirements2_en +
-                                         levels_en +
-                                         salary_en +
-                                         format_en +
-                                         location_en +
-                                         tasks_en)
+    chosen_vacancy = re.sub(r'\s+', ' ',
+                            vacancy['position_skills_en'] +
+                            vacancy['requirements1_en'] +
+                            vacancy['requirements2_en'] +
+                            vacancy['levels_en'] +
+                            vacancy['salary_en'] +
+                            vacancy['format_en'] +
+                            vacancy['location_en'] +
+                            vacancy['tasks_en'])
 
     # ************************************************************************************
     message = [{"role": "system", "content": prompts.system_01()},
-               # {'role': 'assistant', 'content': prompts.assistant_01()},
+               # {'role': 'assistant', 'content': assistant},
                {"role": "user",
                 "content": f"{prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)}"
                            f"\n{prompts.question_01()}"
