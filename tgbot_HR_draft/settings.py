@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     vacancies_json_files: str
     resumes_json_files: str
     db_index_files: str
+    pdf_report_files: str
 
 
 settings = Settings()

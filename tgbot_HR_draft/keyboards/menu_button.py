@@ -8,5 +8,6 @@ router = Router()
 async def set_menu_botton(bot: Bot):
     # Список с командами и их описанием для кнопки menu
     main_menu_commands = [
-        BotCommand(command='/start', description='Start')]
+        BotCommand(command='/start', description='Start')
+    ]
     await bot.set_my_commands(main_menu_commands)

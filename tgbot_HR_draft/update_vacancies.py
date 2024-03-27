@@ -31,11 +31,13 @@ def update_vacancies():
                     vacancy['_id'] = vacancy_file_name  # Добавляю поле "_id" с именем файла
 
                 # **************************************************************************************************
+                vacancy_skills = (', ').join(vacancy['skills'])
+                print(vacancy_skills)
                 position_skills = re.sub(r'\s+', ' ', f"""
                                   Position: {vacancy['data'].get('position', '')}. 
                                   Skills: {(', ').join(vacancy['skills'])}. """)
                 position_skills_en = transtator.translate(position_skills)
-                time.sleep(1)
+                time.sleep(1) # пауза для более корректной работы между запросами к бесплатному переводчику
 
                 requirements1 = re.sub(r'\s+', ' ', f"""
                                 Requirements: {(' ').join(vacancy['data'].get('mandatoryRequirements', ''))} """)
@@ -81,7 +83,8 @@ def update_vacancies():
                 try:  # сохраняю JSON и сформированные строки из полей вакансий в коллекцию vacancies
                     vacancies_collection.insert_one(vacancy)
                     vacancies_collection.find_one_and_update({'_id': vacancy['_id']},  # нахожу вакансию по _id
-                                                             {'$set': {'position_skills': position_skills,
+                                                             {'$set': {'vacancy_skills': vacancy_skills,
+                                                                       'position_skills': position_skills,
                                                                        'position_skills_en': position_skills_en,
                                                                        'requirements1': requirements1,
                                                                        'requirements1_en': requirements1_en,
@@ -96,7 +99,8 @@ def update_vacancies():
                                                                        'location': location,
                                                                        'location_en': location_en,
                                                                        'tasks': tasks,
-                                                                       'tasks_en': tasks_en, }})
+                                                                       'tasks_en': tasks_en,
+                                                                       }})
                 except Exception as ex:
                     print('Save to vacancies_collection:', ex)
 

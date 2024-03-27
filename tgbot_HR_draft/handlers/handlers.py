@@ -2,7 +2,7 @@ from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import Message
 from settings import settings
-from processing.resume_processing import get_answer_gpt
+from processing.chatgpt_processing import get_answer_gpt
 import os
 
 
