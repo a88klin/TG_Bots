@@ -4,7 +4,7 @@ import re
 system_0 = re.sub(r'\s+', ' ', """You are a professional HR. You help candidates to get 
            a job for the chosen vacancy""")
 
-assistant_0 = "['missing skill 1', 'missing skill 2', 'missing skill 3', ...]"
+assistant_0 = "['group of missing skills 1', 'group of missing skill 2', 'group of missing skill 3', ...]"
 
 assistant_1 = f"""
 #1: ...
@@ -12,7 +12,27 @@ assistant_1 = f"""
 #3: *** Резюме: ... *** Вакансия: ...
 """
 
-def question_00(resume_skills, vacancy_skills):
+def question_skills(resume_skills, vacancy_skills):
+    return re.sub(r'\s+', ' ', f"""
+    *** You have the skills of a candidate from a resume: {resume_skills}. ***
+    *** You also have the necessary skills listed in the vacancy: {vacancy_skills}. ***
+    
+    Compare the skills of the candidate in the resume and the requirements from the vacancy.
+    
+    Any combination of SQL in the resume words and any combination of SQL in the vacancy 
+    requirements means that the candidate has the skill for any combination of SQL except NoSQL.
+    
+    Give me a report on the 10 most important missing skills on your resume (in the form of a 
+    Python list), based on the requirements from the vacancy.
+    
+    The missing skills should be grouped by meanings and areas of activity and sorted by 
+    importance (in the form of a Python list).
+    
+    Answer all questions in Russian, with the exception of the words denoting the candidate's 
+    skills, if you write about them. So, answer in Russian, but if you use words denoting the 
+    candidate's skills, write skills in English.""")
+
+def question_skills_2(resume_skills, vacancy_skills):
     return re.sub(r'\s+', ' ', f"""
     *** You have the skills of a candidate from a resume: {resume_skills}. ***
     *** You also have the necessary skills listed in the vacancy: {vacancy_skills}. ***

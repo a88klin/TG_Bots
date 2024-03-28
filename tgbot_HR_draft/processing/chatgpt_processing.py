@@ -51,7 +51,7 @@ async def get_answer_gpt(resume_file_name, k=3):
         message_0 = [{"role": "system", "content": prompts.system_0},
                      {'role': 'assistant', 'content': prompts.assistant_0},
                      {"role": "user",
-                     "content": f"{prompts.question_00(resume_skills, vacancy_skills)}"}]
+                     "content": f"{prompts.question_skills(resume_skills, vacancy_skills)}"}]
         response_missing_skills = await answer_gpt(message_0, temp=0.3)
         list_missing_skills.append({vacancy_id: response_missing_skills})
 
@@ -70,15 +70,15 @@ async def get_answer_gpt(resume_file_name, k=3):
         try:
             paragraphs = [f"Резюме: {resume_file_name}",
                           f"Вакансия: {vacancy_id}",
-                          f"{response_conclusion}",
-                          f"Недостающие навыки: {response_missing_skills}"]
+                          f"Заключение: {response_conclusion}",
+                          f"Не указанные в резюме навыки: {response_missing_skills}"]
             pdf_file_name = f"{resume_file_name[:-5]}_-_{vacancy_id[:-5]}.pdf"
             path = os.path.join(f'{PDF_REPORT_FILES}', pdf_file_name)
             create_pdf(path, paragraphs)
         except Exception as ex:
             print('PDF отчет:', ex)
 
-    # Записываю отчеты в коллекцию БД для ***************************************
+    # Записываю отчеты в коллекцию БД ***************************************
     try:
         resumes_collection.find_one_and_update(
             {'_id': resume_file_name},
