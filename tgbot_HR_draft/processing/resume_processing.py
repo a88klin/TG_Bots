@@ -84,8 +84,8 @@ async def processing_resume_and_similarity_vacancies(resume_file_name, db_index,
         resume_line_3 = re.sub(r'\s+', ' ', f'{experience}')
 
         try: # сохраняю JSON и сформированные строки из полей резюме в коллекцию resumes
-            resumes_collection.insert_one(resume)
-            resumes_collection.find_one_and_update({'_id': resume['_id']}, # нахожу резюме по _id
+            await resumes_collection.insert_one(resume)
+            await resumes_collection.find_one_and_update({'_id': resume['_id']}, # нахожу резюме по _id
                                                    {'$set': {'line_1': resume_line_1,    # Position, Skills, Add.skills
                                                              'line_2': resume_line_2,    # Salary, Lang, Schedule, Location...
                                                              'line_3': resume_line_3,    # Experience (position, description)

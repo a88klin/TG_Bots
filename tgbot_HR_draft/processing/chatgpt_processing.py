@@ -10,6 +10,8 @@ import os
 
 os.environ["OPENAI_API_KEY"] = settings.openai_api_key.get_secret_value()
 PDF_REPORT_FILES = settings.pdf_report_files
+all_missing_skills = set()
+resume_id = None
 AMOUNT = 0
 
 
@@ -41,10 +43,13 @@ async def get_answer_gpt(resume_file_name, k=3):
         print('Ex.4. Similarity:', ex)
         return
 
+    global all_missing_skills
+    all_missing_skills.clear()
+
     list_missing_skills = []
     list_conclusion = []
 
-    for vacancy_id in scores_ids[1]: # по выбранным резюме _id
+    for vacancy_id in scores_ids[1][:1]: # по выбранным резюме _id
         vacancy_skills, chosen_vacancy = await get_vacancy(vacancy_id)
 
         # Выявление недостающих навыков от ChatGPT ***************************
@@ -54,6 +59,11 @@ async def get_answer_gpt(resume_file_name, k=3):
                      "content": f"{prompts.question_skills(resume_skills, vacancy_skills)}"}]
         response_missing_skills = await answer_gpt(message_0, temp=0.3)
         list_missing_skills.append({vacancy_id: response_missing_skills})
+
+        try: # собираю недостающие скилы из ближайших вакансий
+            all_missing_skills.update(eval(response_missing_skills))
+        except Exception as ex:
+            print('All_missing_skills:', ex)
 
         # Общее заключение от ChatGPT ****************************************
         message_1 = [{"role": "system", "content": prompts.system_0},
@@ -66,8 +76,7 @@ async def get_answer_gpt(resume_file_name, k=3):
         response_conclusion = await answer_gpt(message_1, temp=0.3)
         list_conclusion.append({vacancy_id: response_conclusion})
 
-        # PDF отчет ***********************************************************
-        try:
+        try: # PDF отчет ******************************************************
             paragraphs = [f"Резюме: {resume_file_name}",
                           f"Вакансия: {vacancy_id}",
                           f"Заключение: {response_conclusion}",
@@ -78,15 +87,15 @@ async def get_answer_gpt(resume_file_name, k=3):
         except Exception as ex:
             print('PDF отчет:', ex)
 
-    # Записываю отчеты в коллекцию БД ***************************************
-    try:
-        resumes_collection.find_one_and_update(
-            {'_id': resume_file_name},
-            {'$set': {'missing_skills': list_missing_skills,
-                      'conclusion': list_conclusion}})
+    try: # Запись ответов ChatGPT в коллекцию БД *******************************
+        await resumes_collection.find_one_and_update(
+                    {'_id': resume_file_name},
+                    {'$set': {'missing_skills': list_missing_skills,
+                              'conclusion': list_conclusion}})
     except Exception as ex:
         print('Missing_skills and conclusion update:', ex)
-        return
-    print(round(AMOUNT, 5))
 
-    return 'Ok'
+    global resume_id
+    resume_id = resume_file_name
+    print(round(AMOUNT, 5))
+    return 'Резюме обработано. Ответьте на уточняющие вопросы'

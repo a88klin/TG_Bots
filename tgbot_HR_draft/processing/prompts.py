@@ -22,7 +22,7 @@ def question_skills(resume_skills, vacancy_skills):
     Any combination of SQL in the resume words and any combination of SQL in the vacancy 
     requirements means that the candidate has the skill for any combination of SQL except NoSQL.
     
-    Give me a report on the 10 most important missing skills on your resume (in the form of a 
+    Give me a report on the 5 most important missing skills on your resume (in the form of a 
     Python list), based on the requirements from the vacancy.
     
     The missing skills should be grouped by meanings and areas of activity and sorted by 

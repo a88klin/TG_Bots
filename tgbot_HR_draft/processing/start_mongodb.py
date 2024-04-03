@@ -11,11 +11,8 @@ async def start_mongodb():
     db_hr = mongo.hr
     vacancies_collection = db_hr.vacancies_bot
     resumes_collection = db_hr.resumes_bot
-    return resumes_collection, \
-           vacancies_collection, \
-           db_hr, mongo
+    return resumes_collection, vacancies_collection
 
 
 resumes_collection, \
-vacancies_collection, \
-db_hr, mongo = asyncio.run(start_mongodb())
+vacancies_collection = asyncio.run(start_mongodb())
