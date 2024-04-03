@@ -1,19 +1,23 @@
 import asyncio
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.strategy import FSMStrategy
+from aiogram.fsm.storage.memory import MemoryStorage
 from settings import settings
 from keyboards import menu_button
-from handlers import handlers
+from handlers import handlers, questions_fsm
 
 
 BOT_TOKEN = settings.bot_token.get_secret_value()
 
 async  def start():
     bot = Bot(token=BOT_TOKEN)
-    dp = Dispatcher()
+    dp = Dispatcher(storage=MemoryStorage(),
+                    fsm_strategy=FSMStrategy.USER_IN_CHAT) # по умолчанию
 
     dp.include_routers(
         menu_button.router,
         handlers.router,
+        questions_fsm.router,
     )
 
     await bot.delete_webhook(drop_pending_updates=True)
