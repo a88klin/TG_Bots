@@ -1,11 +1,14 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
+from aiogram.types.input_file import FSInputFile
 from keyboards.keyboards import digit_kb_inline
 from processing.chatgpt_processing import all_missing_skills
 from processing.start_mongodb import resumes_collection
-from processing.report_processing import report_pdf
+from processing.report_processing import report_pdf_missing_skill
+from settings import settings
+import os
 
 
 qs = [] # список недостающих навыков
@@ -72,7 +75,7 @@ async def question_4(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(Question.q4)
-async def final_handler_questions(callback: CallbackQuery, state: FSMContext):
+async def final_handler_questions(callback: CallbackQuery, state: FSMContext, bot: Bot):
     await state.update_data(q4={qs[4]: callback.data}) # Ответ - оценка по навыку 4
     data = await state.get_data() # сохраненные ответы
     await state.clear()
@@ -104,7 +107,14 @@ async def final_handler_questions(callback: CallbackQuery, state: FSMContext):
                 {'_id': resume_id},
                 {'$set': {'missing_skill_value': missing_skill_value_dict}})
 
-        await report_pdf(resume_id, missing_skill_value_dict) # создание PDF отчета
+        # Создание PDF отчета - ответов пользователя ----------------------------------------
+        pdf_file_name = f"{resume_id[:-5]}_-_missing_skills.pdf"
+        file_path = os.path.join(f'{settings.pdf_report_files}', pdf_file_name)
+        await report_pdf_missing_skill(resume_id, file_path, missing_skill_value_dict)
+
+        # Отправка PDF отчета - ответов пользователя админам --------------------------------
+        for user_id in settings.admin_ids:
+            await bot.send_document(user_id, FSInputFile(file_path))
 
     except Exception as ex:
         print('missing_skill_value and report:', ex)

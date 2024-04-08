@@ -11,6 +11,7 @@ import os
 os.environ["OPENAI_API_KEY"] = settings.openai_api_key.get_secret_value()
 PDF_REPORT_FILES = settings.pdf_report_files
 all_missing_skills = set()
+session_pdf_files = []
 resume_id = None
 AMOUNT = 0
 
@@ -35,7 +36,7 @@ async def answer_gpt(messages, temp=0.3):
     return completion.choices[0].message.content
 
 
-async def get_answer_gpt(resume_file_name, k=3):
+async def get_answer_gpt(resume_file_name, k=5):
     try:
         scores_ids, resume_skills, r1, r2, r3 = \
             await processing_resume_and_similarity_vacancies(resume_file_name, db_index_vacancies, k=k)
@@ -48,6 +49,10 @@ async def get_answer_gpt(resume_file_name, k=3):
 
     list_missing_skills = []
     list_conclusion = []
+
+    global session_pdf_files
+    session_pdf_files.clear()
+
 
     for vacancy_id in scores_ids[1][:1]: # по выбранным резюме _id
         vacancy_skills, chosen_vacancy = await get_vacancy(vacancy_id)
@@ -76,14 +81,15 @@ async def get_answer_gpt(resume_file_name, k=3):
         response_conclusion = await answer_gpt(message_1, temp=0.3)
         list_conclusion.append({vacancy_id: response_conclusion})
 
-        try: # PDF отчет ******************************************************
+        try: # PDF отчет. Анализ резюме и вакангсии ****************************
+            pdf_file_name = f"{resume_file_name[:-5]}_-_{vacancy_id[:-5]}.pdf"
+            path = os.path.join(f'{PDF_REPORT_FILES}', pdf_file_name)
             paragraphs = [f"Резюме: {resume_file_name}",
                           f"Вакансия: {vacancy_id}",
                           f"Заключение: {response_conclusion}",
                           f"Не указанные в резюме навыки: {response_missing_skills}"]
-            pdf_file_name = f"{resume_file_name[:-5]}_-_{vacancy_id[:-5]}.pdf"
-            path = os.path.join(f'{PDF_REPORT_FILES}', pdf_file_name)
             create_pdf(path, paragraphs)
+            session_pdf_files.append(path) # добавление названия pdf файла
         except Exception as ex:
             print('PDF отчет:', ex)
 

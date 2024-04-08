@@ -1,6 +1,7 @@
 from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import Message
+from aiogram.types.input_file import FSInputFile
 from settings import settings
 from processing.chatgpt_processing import get_answer_gpt
 from keyboards.keyboards import inline_first
@@ -28,5 +29,16 @@ async def download_json(message: Message, bot: Bot):
                                destination=f"{RESUMES_JSON_FILES}/{received_file}")
         msg1 = await message.answer(f'Резюме получено. Идет поиск подходящих вакансий...')
         answer_ = await get_answer_gpt(received_file)
+
+        # -----------------------------------------------------------
         if answer_:
+            # Отправка PDF отчетов админам
+            from processing.chatgpt_processing import session_pdf_files
+            for file_path in session_pdf_files:
+                for user_id in settings.admin_ids:
+                    await bot.send_document(user_id, FSInputFile(file_path))
+
+        # -----------------------------------------------------------
+        if answer_:
+            # Приглашение пользователя ответить на вопросы
             await msg1.edit_text(answer_, reply_markup=inline_first())
