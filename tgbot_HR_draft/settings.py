@@ -8,9 +8,7 @@ class Settings(BaseSettings):
                                       env_file_encoding='utf-8')
     bot_token: SecretStr
     openai_api_key: SecretStr
-
     admin_ids: list
-    allowed_ids: list
 
     mongodb_host: str
     password: SecretStr
