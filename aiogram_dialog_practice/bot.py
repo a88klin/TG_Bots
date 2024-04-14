@@ -7,8 +7,9 @@ from config import settings
 
 # ПОДКЛЮЧИТЬ ОДИН НУЖНЫЙ ФАЙЛ ДИАЛОГА ИЗ ПАПКИ 'dialogs' и нужные роутеры
 
+from dialogs.dialog5c import router_handler, dialog
 # from dialogs.dialog9_transitions import router_handlers, start_dialog
-from dialogs.dialog11_widgets_transitions import router_handlers, start_dialog, second_dialog
+# from dialogs.dialog11_widgets_transitions import router_handlers, start_dialog, second_dialog
 
 
 BOT_TOKEN = settings.BOT_TOKEN.get_secret_value()
@@ -18,9 +19,9 @@ async def start():
               default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
 
-    dp.include_routers(router_handlers,
-                       start_dialog,
-                       second_dialog,
+    # Установить нужные роутеры из диалогов dialogs/...
+    dp.include_routers(router_handler,
+                       dialog,
                        )
     setup_dialogs(dp)
 
