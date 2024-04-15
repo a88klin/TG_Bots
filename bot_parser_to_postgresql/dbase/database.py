@@ -11,11 +11,11 @@ async def get_async_engine():
 async def create_db():
     engine = await get_async_engine()
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
 
-async def add_user_and_massage(tg_user_id, data_dict, full_message):
+async def add_user_data(tg_user_id, data_dict, all_message):
     engine = await get_async_engine()
     async_session = async_sessionmaker(engine)
 
@@ -24,19 +24,14 @@ async def add_user_and_massage(tg_user_id, data_dict, full_message):
     except:
         dob = 'not found'
 
-    try: # места работы, если распарсились
-        work = ', '.join(data_dict['work'])
-    except:
-        work = 'not found'
-
     async with async_session() as session:
         async with session.begin():
             user = User(tg_user_id = tg_user_id,
-                        name=data_dict.get('name', 'not found'),
+                        full_name=data_dict.get('full_name', 'not found'),
                         dob = dob,
-                        education = data_dict.get('education', 'not found'),
-                        work = work,
-                        full_message = full_message)
+                        position = data_dict.get('position', 'not found'),
+                        skills = data_dict.get('skills', 'not found'),
+                        all_message = all_message)
             session.add(user)
         await session.commit()
 
@@ -76,5 +71,5 @@ async def add_user_and_massage(tg_user_id, data_dict, full_message):
 #         ]
 #     }
 #     asyncio.run(create_db())
-#     asyncio.run(add_user_and_massage(123, data_dict, 'Полный текст сообщения пользователя'))
+#     asyncio.run(add_user_data(123, data_dict, 'Полный текст сообщения пользователя'))
 #     asyncio.run(select_all())

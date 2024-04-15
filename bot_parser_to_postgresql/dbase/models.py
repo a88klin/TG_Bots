@@ -21,8 +21,8 @@ class User(Base):
     tg_user_id: Mapped[int] = mapped_column(BigInteger)
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
-    name: Mapped[str]
+    full_name: Mapped[str]
     dob: Mapped[date] = mapped_column(Date)
-    education: Mapped[str]
-    work: Mapped[str]
-    full_message: Mapped[str | None]
+    position: Mapped[str]
+    skills: Mapped[str]
+    all_message: Mapped[str | None]
