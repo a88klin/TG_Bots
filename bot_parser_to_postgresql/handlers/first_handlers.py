@@ -12,7 +12,7 @@ router = Router()
 # На команду или меню "/start" от пользователя
 @router.message(CommandStart(), F.from_user.id.not_in(settings.ADMIN_IDS))
 async def start_command(message: Message):
-    await message.answer('Здравствуйте! Вышлите информацию о себе, в т.ч. '
+    await message.answer('Здравствуйте! Вышлите информацию о себе одним сообщением, в т.ч. '
                          'полное имя, желаемую позицию, владение навыками и технологиями')
 
 
