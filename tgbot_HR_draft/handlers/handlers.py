@@ -8,6 +8,7 @@ from keyboards.keyboards import inline_first
 import os
 
 
+add_values = dict()
 RESUMES_JSON_FILES = settings.resumes_json_files
 router = Router()
 
@@ -21,20 +22,24 @@ async def process_start_command(message: Message):
 # Хэндлер на отправленный Json файл резюме
 @router.message(F.document)
 async def download_json(message: Message, bot: Bot):
-    global resume_id
     received_file = message.document.file_name
     if received_file.endswith('.json'):
         if received_file not in os.listdir(RESUMES_JSON_FILES):
             await bot.download(message.document,
                                destination=f"{RESUMES_JSON_FILES}/{received_file}")
         msg1 = await message.answer(f'Резюме получено. Идет поиск подходящих вакансий...')
-        answer_ = await get_answer_gpt(received_file)
+
+        global add_values
+        add_values = add_values | {message.from_user.id: {'missing_skills': set(),
+                                                          'pdf_files': [],
+                                                          'resume_id': None}}
+
+        answer_ = await get_answer_gpt(message, received_file)
 
         # -----------------------------------------------------------
         if answer_:
             # Отправка PDF отчетов админам
-            from processing.chatgpt_processing import session_pdf_files
-            for file_path in session_pdf_files:
+            for file_path in add_values[message.from_user.id]['pdf_files']:
                 for user_id in settings.admin_ids:
                     await bot.send_document(user_id, FSInputFile(file_path))
 

@@ -5,14 +5,12 @@ from processing.report_processing import create_pdf
 from processing import prompts
 from settings import settings
 from openai import AsyncOpenAI
+from aiogram.types import Message
 import os
 
 
 os.environ["OPENAI_API_KEY"] = settings.openai_api_key.get_secret_value()
 PDF_REPORT_FILES = settings.pdf_report_files
-all_missing_skills = set()
-session_pdf_files = []
-resume_id = None
 AMOUNT = 0
 
 
@@ -36,7 +34,9 @@ async def answer_gpt(messages, temp=0.3):
     return completion.choices[0].message.content
 
 
-async def get_answer_gpt(resume_file_name, k=5):
+async def get_answer_gpt(message: Message, resume_file_name, k=5):
+    from handlers.handlers import add_values
+    global add_values
     try:
         scores_ids, resume_skills, r1, r2, r3 = \
             await processing_resume_and_similarity_vacancies(resume_file_name, db_index_vacancies, k=k)
@@ -44,16 +44,8 @@ async def get_answer_gpt(resume_file_name, k=5):
         print('Ex.4. Similarity:', ex)
         return
 
-    global all_missing_skills
-    all_missing_skills.clear()
-
     list_missing_skills = []
     list_conclusion = []
-
-    global session_pdf_files
-    session_pdf_files.clear()
-
-
     for vacancy_id in scores_ids[1][:1]: # по выбранным резюме _id
         vacancy_skills, chosen_vacancy = await get_vacancy(vacancy_id)
 
@@ -66,7 +58,8 @@ async def get_answer_gpt(resume_file_name, k=5):
         list_missing_skills.append({vacancy_id: response_missing_skills})
 
         try: # собираю недостающие скилы из ближайших вакансий
-            all_missing_skills.update(eval(response_missing_skills))
+            # all_missing_skills.update(eval(response_missing_skills))
+            add_values[message.from_user.id]['missing_skills'].update(eval(response_missing_skills))
         except Exception as ex:
             print('All_missing_skills:', ex)
 
@@ -89,7 +82,8 @@ async def get_answer_gpt(resume_file_name, k=5):
                           f"Заключение: {response_conclusion}",
                           f"Не указанные в резюме навыки: {response_missing_skills}"]
             create_pdf(path, paragraphs)
-            session_pdf_files.append(path) # добавление названия pdf файла
+            # session_pdf_files.append(path) # добавление названия pdf файла
+            add_values[message.from_user.id]['pdf_files'].append(path)
         except Exception as ex:
             print('PDF отчет:', ex)
 
@@ -101,7 +95,6 @@ async def get_answer_gpt(resume_file_name, k=5):
     except Exception as ex:
         print('Missing_skills and conclusion update:', ex)
 
-    global resume_id
-    resume_id = resume_file_name
+    add_values[message.from_user.id]['resume_id'] = resume_file_name
     print(round(AMOUNT, 5))
     return 'Резюме обработано. Ответьте на уточняющие вопросы'

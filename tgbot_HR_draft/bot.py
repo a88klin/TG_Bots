@@ -7,10 +7,8 @@ from keyboards import menu_button
 from handlers import handlers, questions_fsm
 
 
-BOT_TOKEN = settings.bot_token.get_secret_value()
-
 async  def start():
-    bot = Bot(token=BOT_TOKEN)
+    bot = Bot(token=settings.bot_token.get_secret_value())
     dp = Dispatcher(storage=MemoryStorage(),
                     fsm_strategy=FSMStrategy.USER_IN_CHAT) # по умолчанию
 
