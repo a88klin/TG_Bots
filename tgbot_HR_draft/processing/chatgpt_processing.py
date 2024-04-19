@@ -44,13 +44,19 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
         print('Ex.4. Similarity:', ex)
         return
 
+    # Определение основного Скилла и опыта *********************************
+    content_for_main_skill = [{"role": "system", "content": prompts.system},
+                              {"role": "user", "content": f"{prompts.main_skill(r1, r3)}"}]
+    response_main_skill = await answer_gpt(content_for_main_skill, temp=0)
+
     list_missing_skills = []
     list_conclusion = []
-    for vacancy_id in scores_ids[1][:1]: # по выбранным резюме _id
+    # ***********************************************************************
+    for vacancy_id in scores_ids[1][:1]: # по выбранным вакансиям _id
         vacancy_skills, chosen_vacancy = await get_vacancy(vacancy_id)
 
         # Выявление недостающих навыков от ChatGPT ***************************
-        message_0 = [{"role": "system", "content": prompts.system_0},
+        message_0 = [{"role": "system", "content": prompts.system},
                      {'role': 'assistant', 'content': prompts.assistant_0},
                      {"role": "user",
                      "content": f"{prompts.question_skills(resume_skills, vacancy_skills)}"}]
@@ -58,19 +64,15 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
         list_missing_skills.append({vacancy_id: response_missing_skills})
 
         try: # собираю недостающие скилы из ближайших вакансий
-            # all_missing_skills.update(eval(response_missing_skills))
             add_values[message.from_user.id]['missing_skills'].update(eval(response_missing_skills))
         except Exception as ex:
             print('All_missing_skills:', ex)
 
         # Общее заключение от ChatGPT ****************************************
-        message_1 = [{"role": "system", "content": prompts.system_0},
-                     {'role': 'assistant', 'content': prompts.assistant_1},
+        message_1 = [{"role": "system", "content": prompts.system},
                      {"role": "user",
                       "content": f"{prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)}"
-                                 f"\n{prompts.question_01(resume_skills, vacancy_skills)}"
-                                 f"\n{prompts.question_02()}"
-                                 f"\n{prompts.question_03()}"}]
+                                 f"\n{prompts.question_skills_3(resume_skills, vacancy_skills)}"}]
         response_conclusion = await answer_gpt(message_1, temp=0.3)
         list_conclusion.append({vacancy_id: response_conclusion})
 
@@ -79,7 +81,8 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
             path = os.path.join(f'{PDF_REPORT_FILES}', pdf_file_name)
             paragraphs = [f"Резюме: {resume_file_name}",
                           f"Вакансия: {vacancy_id}",
-                          f"Заключение: {response_conclusion}",
+                          f"{response_conclusion}",
+                          f"{response_main_skill}",
                           f"Не указанные в резюме навыки: {response_missing_skills}"]
             create_pdf(path, paragraphs)
             # session_pdf_files.append(path) # добавление названия pdf файла
@@ -91,7 +94,8 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
         await resumes_collection.find_one_and_update(
                     {'_id': resume_file_name},
                     {'$set': {'missing_skills': list_missing_skills,
-                              'conclusion': list_conclusion}})
+                              'conclusion': list_conclusion,
+                              'main_skill': response_main_skill}})
     except Exception as ex:
         print('Missing_skills and conclusion update:', ex)
 

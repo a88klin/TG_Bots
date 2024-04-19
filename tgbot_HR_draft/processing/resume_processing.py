@@ -46,8 +46,10 @@ async def processing_resume_and_similarity_vacancies(resume_file_name, db_index,
 
         experience = '' # Опыт
         for n, place in enumerate(resume['experience']):
-            experience += f"Job experience {n+1}: Position - {place['position']}. \
-                            Description of previous job {n+1}: {place['description']} "
+            experience += f""" *** Job experience {n + 1}: 
+                           Position - {place['position']}.
+                           Period (yyyy-mm-dd): from {place['start']} to {place['end']}. 
+                           Description of job {n + 1}: {place['description']} """
 
         languages = '' # Языки
         for lang in resume['language']:

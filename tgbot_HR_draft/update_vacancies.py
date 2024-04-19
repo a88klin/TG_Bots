@@ -16,6 +16,8 @@ DB_INDEX_FILES = settings.db_index_files
 MONGODB_HOST = settings.mongodb_host
 os.environ["OPENAI_API_KEY"] = settings.openai_api_key.get_secret_value()
 transtator = GoogleTranslator(source='ru', target='en')
+os.makedirs(settings.vacancies_json_files, exist_ok=True)
+os.makedirs(settings.db_index_files, exist_ok=True)
 
 
 def update_vacancies():
@@ -32,7 +34,6 @@ def update_vacancies():
 
                 # **************************************************************************************************
                 vacancy_skills = (', ').join(vacancy['skills'])
-                print(vacancy_skills)
                 position_skills = re.sub(r'\s+', ' ', f"""
                                   Position: {vacancy['data'].get('position', '')}. 
                                   Skills: {(', ').join(vacancy['skills'])}. """)
@@ -54,11 +55,12 @@ def update_vacancies():
                     requirements2, requirements2_en = '', ''
 
                 try:
-                    salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0]) * 168  # 168 часов в месяц
-                    salary = f"Salary: {salary} рублей в месяц. "
-                    salary_en = transtator.translate(salary)
+                    # salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0]) * 168  # 168 часов в месяц
+                    # salary = f"Salary: {salary} рублей в месяц. "
+                    salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0])
+                    salary = f"Ставка: {salary} рублей. "
+                    salary_en = f"Salary Rate: {salary} rubles. "
                 except Exception as ex:
-                    # print(vacancy_file_name, 'Salary:', ex)
                     salary, salary_en = '', ''
 
                 levels = f"Levels: {(', ').join(vacancy['data'].get('experienceLevels', ''))}. "

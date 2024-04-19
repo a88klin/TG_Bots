@@ -5,6 +5,12 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from settings import settings
 from keyboards import menu_button
 from handlers import handlers, questions_fsm
+import os
+
+
+def create_data_dirs():
+    os.makedirs(settings.resumes_json_files, exist_ok=True)
+    os.makedirs(settings.pdf_report_files, exist_ok=True)
 
 
 async  def start():
@@ -28,4 +34,5 @@ async  def start():
 
 
 if __name__  == '__main__':
+    create_data_dirs()
     asyncio.run(start())

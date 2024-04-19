@@ -1,16 +1,11 @@
+from datetime import datetime
 import re
 
 
-system_0 = re.sub(r'\s+', ' ', """You are a professional HR. You help candidates to get 
-           a job for the chosen vacancy""")
+system = re.sub(r'\s+', ' ', """You are a professional HR. You help candidates to get 
+                                a job for the chosen vacancy""")
 
-assistant_0 = "['group of missing skills 1', 'group of missing skill 2', 'group of missing skill 3', ...]"
-
-assistant_1 = f"""
-#1: ...
-#2: ...
-#3: *** Резюме: ... *** Вакансия: ...
-"""
+assistant_0 = "['group of missing skills 1', 'group of missing skill 2', ... , 'group of missing skill 5']"
 
 def question_skills(resume_skills, vacancy_skills):
     return re.sub(r'\s+', ' ', f"""
@@ -49,19 +44,47 @@ def message_content_01(resume, vacancy):
     skills, if you write about them. So, answer in Russian, but if you use words denoting the 
     candidate's skills, write skills in English.""")
 
-def question_01(resume_skills, vacancy_skills):
+def question_skills_3(resume_skills, vacancy_skills):
     return re.sub(r'\s+', ' ', f"""
-    *** You have the skills of a candidate from a resume: {resume_skills}. ***
-    *** You also have the necessary skills listed in the vacancy: {vacancy_skills}. ***
-    Questions #1: What is the percentage from 0 to 100 of matching skills in the candidate's resume compared
-    to the necessary skills in the vacancy? Answer the question briefly in one sentence in Russian.""")
+    *** You have the position and skills of a candidate from a resume: {resume_skills}. ***
+    *** You also have the necessary position and skills listed in the vacancy: {vacancy_skills}. ***  
+      
+    Compare the skills of the candidate in the resume and the requirements from the vacancy. 
+    После каждого ответа ставь перенос строки: <br/>. При форматировании текста используй HTML теги: 
+    <b>Жирный текст</b>, <i>курсив</i>, <u>подчеркивание</u> и другие стили, а также два переноса 
+    строки после каждого ответа <br/><br/>. 
+         
+    * Questions #1: Specify which skills from the RESUME match the skills in the vacancy.
+    * Questions #2: Specify which skills are listed on the resume, but not listed in the vacancy.
+    * Questions #3: Specify which skills are missing from the resume compared to the required skills 
+      from the vacancy.   
+    * Questions #4: What is the percentage from 0 to 100 of matching skills in the candidate's resume 
+      compared to the necessary skills in the vacancy and why? Answer the question briefly in one sentence.
+    * Questions #5: What can be said about the candidate's other competencies (except skills) in comparison 
+      with the requirements of the vacancy (except skills)? Answer in Russian. 
+    * Questions #6: Sammarize the fields of the Resume: Salary, Languages, Job schedule, Location, 
+      Attitude to relocation. * AND Sammarize vacancy fields: Salary, Levels, Work Format, Required Location. 
+      Answer in Russian. Insert a line break <br/> between the Resume and Vacancy answers. 
+    
+    *** Answer all questions in Russian, with the exception of the words denoting the candidate's 
+      skills, if you write about them. So, answer in Russian, but if you use words denoting the 
+      candidate's skills, write skills in English. 
+    
+      После каждого ответа ставь перенос строки: <br/>. При форматировании текста используй HTML теги: 
+      <b>Жирный текст</b>, <i>курсив</i>, <u>подчеркивание</u> и другие стили, а также два переноса строки 
+      после каждого ответа. <br/><br/>""")
 
-def question_02(resume_part=None, vacancy_part=None):
-    return re.sub(r'\s+', ' ', f""" * Questions #2:
-    What can be said about the candidate's other competencies (except skills) in comparison with 
-    the requirements of the vacancy (except skills)? Answer in Russian.""")
 
-def question_03(resume_part=None, vacancy_part=None):
-    return re.sub(r'\s+', ' ', f""" * Questions #3:
-    Sammarize the fields of the resume: Salary, Languages, Job schedule, Location, Attitude to relocation. *
-    AND Sammarize vacancy fields: Salary, Levels, Work Format, Required Location. * Answer in Russian.""")
+def main_skill(resume_skills, resume_experience):
+    current_date = f"{datetime.now().strftime('%Y-%m')}-01"
+    return re.sub(r'\s+', ' ', f"""
+    *** You have the position and skills of a candidate from a resume: {resume_skills}. *** 
+    *** You have the experience of a candidate from a resume: {resume_experience}. *** 
+    Определи, какой один навык (skill) является самым важным и основным навыком для указанной позиции.
+    После этого, Пожалуйста, посчитай сумму месяцев временных интервалов работы по основному навыку 
+    на основании опыта кандидата, если этот основной навык упомянут в этом интервале.    
+    Необходимо учитывать все интервалы работы, где упоминается основной навык.
+    Если в интервале работы НЕТ упоминания основного навыка - этот интервал не считать.
+    Какой суммарный опыт в месяцах по основному навыку ? Выведи расчет и количество месяцев.
+    Даты в резюме указаны в формате: yyyy-mm-dd. Если дата "to None" - используй {current_date}.
+    Каждый интервал суммируй один раз. Ответь на русском языке""")
