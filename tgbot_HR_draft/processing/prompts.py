@@ -50,29 +50,24 @@ def question_skills_3(resume_skills, vacancy_skills):
     *** You also have the necessary position and skills listed in the vacancy: {vacancy_skills}. ***  
       
     Compare the skills of the candidate in the resume and the requirements from the vacancy. 
-    После каждого ответа ставь перенос строки: <br/>. При форматировании текста используй HTML теги: 
-    <b>Жирный текст</b>, <i>курсив</i>, <u>подчеркивание</u> и другие стили, а также два переноса 
-    строки после каждого ответа <br/><br/>. 
          
     * Questions #1: Specify which skills from the RESUME match the skills in the vacancy.
     * Questions #2: Specify which skills are listed on the resume, but not listed in the vacancy.
     * Questions #3: Specify which skills are missing from the resume compared to the required skills 
-      from the vacancy.   
+      from the vacancy. 
     * Questions #4: What is the percentage from 0 to 100 of matching skills in the candidate's resume 
       compared to the necessary skills in the vacancy and why? Answer the question briefly in one sentence.
     * Questions #5: What can be said about the candidate's other competencies (except skills) in comparison 
       with the requirements of the vacancy (except skills)? Answer in Russian. 
     * Questions #6: Sammarize the fields of the Resume: Salary, Languages, Job schedule, Location, 
-      Attitude to relocation. * AND Sammarize vacancy fields: Salary, Levels, Work Format, Required Location. 
+      Attitude to relocation. * AND Sammarize vacancy fields: Salary rate, Levels, Work Format, Required Location. 
       Answer in Russian. Insert a line break <br/> between the Resume and Vacancy answers. 
     
     *** Answer all questions in Russian, with the exception of the words denoting the candidate's 
       skills, if you write about them. So, answer in Russian, but if you use words denoting the 
-      candidate's skills, write skills in English. 
-    
-      После каждого ответа ставь перенос строки: <br/>. При форматировании текста используй HTML теги: 
-      <b>Жирный текст</b>, <i>курсив</i>, <u>подчеркивание</u> и другие стили, а также два переноса строки 
-      после каждого ответа. <br/><br/>""")
+      candidate's skills, write skills in English. When displaying text, use HTML tags: <b>Bold text</b>, 
+      <i>italics</i>, <u>underscores</u> and other styles, as well as line breaks <br/>.
+      After answering each question, put a line break tag: <br/>""")
 
 
 def main_skill(resume_skills, resume_experience):

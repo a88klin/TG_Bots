@@ -83,7 +83,8 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
                           f"Вакансия: {vacancy_id}",
                           f"{response_conclusion}",
                           f"{response_main_skill}",
-                          f"Не указанные в резюме навыки: {response_missing_skills}"]
+                          # f"Не указанные в резюме навыки: {response_missing_skills}"
+                          ]
             create_pdf(path, paragraphs)
             # session_pdf_files.append(path) # добавление названия pdf файла
             add_values[message.from_user.id]['pdf_files'].append(path)
