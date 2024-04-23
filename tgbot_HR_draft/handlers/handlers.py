@@ -27,7 +27,7 @@ async def download_json(message: Message, bot: Bot):
         if received_file not in os.listdir(RESUMES_JSON_FILES):
             await bot.download(message.document,
                                destination=f"{RESUMES_JSON_FILES}/{received_file}")
-        msg1 = await message.answer(f'Резюме получено. Идет поиск подходящих вакансий...')
+        msg1 = await message.answer('Резюме получено. Идет поиск подходящих вакансий...')
 
         global add_values
         add_values = add_values | {message.from_user.id: {'missing_skills': set(),
@@ -45,5 +45,6 @@ async def download_json(message: Message, bot: Bot):
 
         # -----------------------------------------------------------
         if answer_:
-            # Приглашение пользователя ответить на вопросы
-            await msg1.edit_text(answer_, reply_markup=inline_first())
+            await msg1.edit_text(answer_)
+            await message.answer('Ответьте пожалуйста на уточняющие вопросы',
+                                 reply_markup=inline_first())

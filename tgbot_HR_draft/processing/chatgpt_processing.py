@@ -15,8 +15,10 @@ AMOUNT = 0
 
 
 def print_tokens_count_and_price(completion):
-    # "gpt-3.5-turbo-0125" - Input: $0.50 / 1M tokens - Output: $1.50 / 1M tokens - 07/03/2024 - https://openai.com/pricing
-    price = 0.5 * completion.usage.prompt_tokens / 1e6 + 1.5 * completion.usage.completion_tokens / 1e6
+    # 07/03/2024 - https://openai.com/pricing
+    # gpt-3.5-turbo-0125 - Input: $0.50 / 1M tokens - Output: $1.50 / 1M tokens
+    price = 0.5 * completion.usage.prompt_tokens / 1e6 + \
+            1.5 * completion.usage.completion_tokens / 1e6
     print(f'Использовано токенов: {completion.usage.prompt_tokens} + '
                                 f'{completion.usage.completion_tokens} = '
                                 f'{completion.usage.total_tokens}. '
@@ -102,4 +104,5 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
 
     add_values[message.from_user.id]['resume_id'] = resume_file_name
     print(round(AMOUNT, 5))
-    return 'Резюме обработано. Ответьте на уточняющие вопросы'
+    return f'Резюме обработано! Наиболее подходящие вакансии: ' \
+           f'\n\n{(", ").join(scores_ids[1])}'

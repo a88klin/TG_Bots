@@ -58,10 +58,10 @@ def update_vacancies():
                     # salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0]) * 168  # 168 часов в месяц
                     # salary = f"Salary: {salary} рублей в месяц. "
                     salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0])
-                    salary = f"Ставка в час: {salary} рублей. "
+                    salary_ru = f"Ставка в час: {salary} рублей. "
                     salary_en = f"Salary rate per hour: {salary} rubles. "
                 except Exception as ex:
-                    salary, salary_en = '', ''
+                    salary_ru, salary_en = '', ''
 
                 levels = f"Levels: {(', ').join(vacancy['data'].get('experienceLevels', ''))}. "
                 levels_en = transtator.translate(levels)
@@ -92,7 +92,7 @@ def update_vacancies():
                                                                        'requirements1_en': requirements1_en,
                                                                        'requirements2': requirements2,
                                                                        'requirements2_en': requirements2_en,
-                                                                       'salary': salary,
+                                                                       'salary': salary_ru,
                                                                        'salary_en': salary_en,
                                                                        'levels': levels,
                                                                        'levels_en': levels_en,

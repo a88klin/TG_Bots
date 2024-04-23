@@ -1,4 +1,6 @@
 import asyncio
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -14,7 +16,8 @@ def create_data_dirs():
 
 
 async  def start():
-    bot = Bot(token=settings.bot_token.get_secret_value())
+    bot = Bot(token=settings.bot_token.get_secret_value(),
+              default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher(storage=MemoryStorage(),
                     fsm_strategy=FSMStrategy.USER_IN_CHAT) # по умолчанию
 
