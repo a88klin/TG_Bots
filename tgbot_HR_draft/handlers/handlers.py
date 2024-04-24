@@ -38,10 +38,10 @@ async def download_json(message: Message, bot: Bot):
 
         # -----------------------------------------------------------
         if answer_:
-            # Отправка PDF отчетов админам
             for file_path in add_values[message.from_user.id]['pdf_files']:
+                await bot.send_document(message.from_user.id, FSInputFile(file_path)) # Отправка PDF отчета пользователю
                 for user_id in settings.admin_ids:
-                    await bot.send_document(user_id, FSInputFile(file_path))
+                    await bot.send_document(user_id, FSInputFile(file_path)) # Отправка PDF отчетов админам
 
         # -----------------------------------------------------------
         if answer_:
