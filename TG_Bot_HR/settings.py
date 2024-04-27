@@ -11,9 +11,6 @@ class Settings(BaseSettings):
     admin_ids: list
 
     mongodb_host: str
-    password: SecretStr
-    user: str
-    database: str
 
     vacancies_json_files: str
     resumes_json_files: str

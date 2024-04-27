@@ -10,10 +10,6 @@ MONGODB_HOST=mongodb://localhost:27017/
 # для запуска через docker-compose
 # MONGODB_HOST=mongodb://mongo:27017/
 
-PASSWORD=your_password
-USER=your_user
-DATABASE=your_database
-
 # Папки с файлами JSON, PDF отчетами, Базами FAIS
 VACANCIES_JSON_FILES=data/vacancies_json
 RESUMES_JSON_FILES=data/resumes_json
