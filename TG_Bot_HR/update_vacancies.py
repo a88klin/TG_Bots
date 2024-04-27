@@ -27,6 +27,7 @@ def update_vacancies():
     new_chunks_vanacies = []
     for vacancy_file_name in tqdm(os.listdir(VACANCIES_JSON_FILES)):  # Локальная папка с вакансиями
         if vacancy_file_name.endswith('.json'):
+            print(vacancy_file_name)
             if not vacancies_collection.find_one({'_id': vacancy_file_name}):  # если вакансии нет в базе
                 with open(os.path.join(f'{VACANCIES_JSON_FILES}', vacancy_file_name), 'r', encoding='utf-8') as r:
                     vacancy = json.load(r)
@@ -125,17 +126,20 @@ def update_vacancies():
 
         if os.path.exists(os.path.join(f'{DB_INDEX_FILES}', 'db_vacancies_index.faiss')):
             db_index_vacancies = FAISS.load_local(folder_path=DB_INDEX_FILES,
+                                                  allow_dangerous_deserialization=True,
                                                   embeddings=OpenAIEmbeddings(),
                                                   index_name='db_vacancies_index')
             db_index_vacancies.merge_from(db_index_new)
             db_index_vacancies.save_local(folder_path=DB_INDEX_FILES,
                                           index_name='db_vacancies_index')
-            print(len(db_index_vacancies.docstore._dict))
+            # print(len(db_index_vacancies.docstore._dict))
+            print('Обновление вакансий завершено')
 
         else:
             db_index_new.save_local(folder_path=DB_INDEX_FILES,
                                     index_name='db_vacancies_index')
-            print(len(db_index_new.docstore._dict))
+            # print(len(db_index_new.docstore._dict))
+            print('Обновление вакансий завершено')
 
 
 if __name__ == "__main__":

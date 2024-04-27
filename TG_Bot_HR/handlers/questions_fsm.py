@@ -82,7 +82,9 @@ async def question_4(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(Question.q4)
-async def final_handler_questions(callback: CallbackQuery, state: FSMContext, bot: Bot):
+async def final_handler_questions(callback: CallbackQuery,
+                                  state: FSMContext,
+                                  bot: Bot):
     from handlers.handlers import add_values
     mis_skills = list(add_values[callback.from_user.id]['missing_skills'])
     await state.update_data(q4={mis_skills[4]: callback.data}) # Ответ - оценка по навыку 4
@@ -97,7 +99,7 @@ async def final_handler_questions(callback: CallbackQuery, state: FSMContext, bo
         missing_skill_value += f'{k}: {v}.  '  # Навык: оценка владения
         missing_skill_value_dict |= inner_dict  # объединенный словарь - Навык: оценка владения
     await callback.message.answer(f'Указанный уровень владения навыками от 0 до 7:  {missing_skill_value}')
-    await callback.message.answer('Спасибо! Вам будут высланы подходящие вакансии.')
+    await callback.message.answer('Спасибо!')
 
     # Запись ответов в коллекцию БД и создание отчета ***********************************
     try:
@@ -120,7 +122,9 @@ async def final_handler_questions(callback: CallbackQuery, state: FSMContext, bo
         file_path = os.path.join(f'{settings.pdf_report_files}', pdf_file_name)
         await report_pdf_missing_skill(resume_id, file_path, missing_skill_value_dict)
 
-        # Отправка PDF отчета - ответов пользователя админам --------------------------------
+        # Отправка PDF отчета пользователю
+        await bot.send_document(callback.from_user.id, FSInputFile(file_path))
+        # Отправка PDF отчета - ответов пользователя админам
         for user_id in settings.admin_ids:
             await bot.send_document(user_id, FSInputFile(file_path))
 

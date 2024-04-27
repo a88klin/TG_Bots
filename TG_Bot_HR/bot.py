@@ -7,6 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from settings import settings
 from keyboards import menu_button
 from handlers import handlers, questions_fsm
+from update_vacancies import update_vacancies
 import os
 
 
@@ -37,5 +38,6 @@ async  def start():
 
 
 if __name__  == '__main__':
+    update_vacancies()
     create_data_dirs()
     asyncio.run(start())

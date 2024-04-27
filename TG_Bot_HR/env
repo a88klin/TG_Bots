@@ -4,7 +4,12 @@ OPENAI_API_KEY=...
 # Админам приходят отчеты
 ADMIN_IDS=[555]
 
+# для запуска после локальной установки MongoDB Community Edition (https://www.mongodb.com/try/download/community)
 MONGODB_HOST=mongodb://localhost:27017/
+
+# для запуска через docker-compose
+# MONGODB_HOST=mongodb://mongo:27017/
+
 PASSWORD=your_password
 USER=your_user
 DATABASE=your_database

@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+  hr_bot:
+    build: /Projects/hr_bot
