@@ -40,8 +40,11 @@ async def download_json(message: Message, bot: Bot):
         if answer_:
             for file_path in add_values[message.from_user.id]['pdf_files']:
                 await bot.send_document(message.from_user.id, FSInputFile(file_path)) # Отправка PDF отчета пользователю
-                for user_id in settings.admin_ids:
-                    await bot.send_document(user_id, FSInputFile(file_path)) # Отправка PDF отчетов админам
+                try:
+                    for user_id in settings.admin_ids:
+                        await bot.send_document(user_id, FSInputFile(file_path)) # Отправка PDF отчетов админам
+                except Exception as ex:
+                    print('Error: Отправка PDF отчетов админам', '\n', ex)
 
         # -----------------------------------------------------------
         if answer_:
