@@ -117,7 +117,12 @@ async def final_handler_questions(callback: CallbackQuery,
                 {'_id': resume_id},
                 {'$set': {'missing_skill_value': missing_skill_value_dict}})
 
+    except Exception as ex:
+        print('Missing_skill_value:', ex)
+
+    try:
         # Создание PDF отчета - ответов пользователя ----------------------------------------
+        resume_id = add_values[callback.from_user.id]['resume_id']
         pdf_file_name = f"{resume_id[:-5]}_-_missing_skills.pdf"
         file_path = os.path.join(f'{settings.pdf_report_files}', pdf_file_name)
         await report_pdf_missing_skill(resume_id, file_path, missing_skill_value_dict)
@@ -131,4 +136,4 @@ async def final_handler_questions(callback: CallbackQuery,
         del add_values[callback.from_user.id]
 
     except Exception as ex:
-        print('missing_skill_value and report:', ex)
+        print('Missing_skill PDF report:', ex)
