@@ -1,7 +1,18 @@
 version: '3'
 
 services:
+
   mongo:
     image: mongo
-  hr_bot:
+    restart: always
+    volumes:
+      - mongodb_data:/Projects/hr_bot/data/db
+
+  hr_bot2:
+    restart: always
     build: /Projects/hr_bot
+    depends_on:
+      - mongo
+
+volumes:
+    mongodb_data:
