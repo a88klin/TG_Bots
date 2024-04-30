@@ -8,7 +8,7 @@ services:
     volumes:
       - mongodb_data:/Projects/hr_bot/data/db
 
-  hr_bot2:
+  hr_bot:
     restart: always
     build: /Projects/hr_bot
     depends_on:
