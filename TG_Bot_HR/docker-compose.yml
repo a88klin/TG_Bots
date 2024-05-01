@@ -11,6 +11,8 @@ services:
   hr_bot:
     restart: always
     build: /Projects/hr_bot
+    volumes:
+      - /Projects/hr_bot:/Projects/hr_bot
     depends_on:
       - mongo
 
