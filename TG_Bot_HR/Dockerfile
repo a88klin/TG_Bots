@@ -12,4 +12,5 @@ RUN pip install -r requirements.txt
 # копируем проект
 COPY . .
 
-CMD ["python", "update_vacancies.py"] && ["python", "bot.py"]
+# Создание базы вакансий и запуск бота
+CMD ["python", "update_vacancies.py"]

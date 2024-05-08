@@ -11,6 +11,8 @@ import re
 import os
 
 
+os.makedirs(settings.resumes_json_files, exist_ok=True)
+os.makedirs(settings.pdf_report_files, exist_ok=True)
 os.makedirs(settings.vacancies_json_files, exist_ok=True)
 os.makedirs(settings.db_index_files, exist_ok=True)
 VACANCIES_JSON_FILES = settings.vacancies_json_files
@@ -146,3 +148,9 @@ def update_vacancies():
 
 if __name__ == "__main__":
     update_vacancies()
+
+    from bot import start
+    import asyncio
+    asyncio.run(start())
+
+

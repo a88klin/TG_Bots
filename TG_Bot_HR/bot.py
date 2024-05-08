@@ -14,7 +14,7 @@ def create_data_dirs():
     os.makedirs(settings.pdf_report_files, exist_ok=True)
 
 
-async  def start():
+async def start():
     bot = Bot(token=settings.bot_token.get_secret_value(),
               default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher(storage=MemoryStorage(),
