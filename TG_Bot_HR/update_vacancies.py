@@ -11,14 +11,14 @@ import re
 import os
 
 
+os.makedirs(settings.vacancies_json_files, exist_ok=True)
+os.makedirs(settings.db_index_files, exist_ok=True)
 VACANCIES_JSON_FILES = settings.vacancies_json_files
 DB_INDEX_FILES = settings.db_index_files
+
 MONGODB_HOST = settings.mongodb_host
 os.environ["OPENAI_API_KEY"] = settings.openai_api_key.get_secret_value()
 transtator = GoogleTranslator(source='ru', target='en')
-os.makedirs(settings.vacancies_json_files, exist_ok=True)
-os.makedirs(settings.db_index_files, exist_ok=True)
-
 
 def update_vacancies():
     mongo = pymongo.MongoClient(MONGODB_HOST)
@@ -124,7 +124,8 @@ def update_vacancies():
 
         db_index_new = FAISS.from_documents(new_chunks_vanacies, OpenAIEmbeddings())
 
-        if os.path.exists(os.path.join(f'{DB_INDEX_FILES}', 'db_vacancies_index.faiss')):
+        # if os.path.exists(os.path.join(f'{DB_INDEX_FILES}', 'db_vacancies_index.faiss')):
+        try:
             db_index_vacancies = FAISS.load_local(folder_path=DB_INDEX_FILES,
                                                   allow_dangerous_deserialization=True,
                                                   embeddings=OpenAIEmbeddings(),
@@ -135,7 +136,8 @@ def update_vacancies():
             # print(len(db_index_vacancies.docstore._dict))
             print('Обновление вакансий завершено')
 
-        else:
+        # else:
+        except:
             db_index_new.save_local(folder_path=DB_INDEX_FILES,
                                     index_name='db_vacancies_index')
             # print(len(db_index_new.docstore._dict))
