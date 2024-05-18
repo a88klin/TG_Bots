@@ -29,8 +29,7 @@ async def exit_message(callback: CallbackQuery):
     from handlers.handlers import add_values
     del add_values[callback.from_user.id]
     await callback.message.delete()
-    await callback.message.answer('Обработка завершена. Вы можете загрузить следующее резюме в фомате JSON. '
-                                  'После обработки резюме вам будет предложено ответить на вопросы')
+    await callback.message.answer('Обработка завершена. Начните сначала через меню /start')
 
 
 @router.callback_query(F.data=='_yes') # начало опроса
@@ -99,7 +98,7 @@ async def final_handler_questions(callback: CallbackQuery,
         missing_skill_value += f'{k}: {v}.  '  # Навык: оценка владения
         missing_skill_value_dict |= inner_dict  # объединенный словарь - Навык: оценка владения
     await callback.message.answer(f'Указанный уровень владения навыками от 0 до 7:  {missing_skill_value}')
-    await callback.message.answer('Спасибо!')
+    await callback.message.answer('Спасибо! Начните сначала через меню /start')
 
     # Запись ответов в коллекцию БД и создание отчета ***********************************
     try:

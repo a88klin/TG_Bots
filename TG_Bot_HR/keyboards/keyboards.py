@@ -1,6 +1,14 @@
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 
+def inline_mode():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Подбор вакансий", callback_data='selection')
+    builder.button(text="Анализ Резюме vs Вакансия", callback_data='analysis')
+    builder.adjust(1)
+    return builder.as_markup()
+
+
 def digit_kb_reply():
     items = ['0', '1', '2', '3', '4', '5', '6', '7']
     builder = ReplyKeyboardBuilder()
