@@ -28,6 +28,15 @@ async def get_vacancy(_id):
     return vacancy_skills, chosen_vacancy
 
 
+async def get_requirements(_id):
+    # Получаем Поля вакансии для сравнения и вопросов к ChatGPT **********************************************
+    vacancy = await vacancies_collection.find_one({'_id': _id})
+    return re.sub(r'\s+', ' ',
+                  vacancy['position_skills_en'] +
+                  vacancy['requirements1_en'] +
+                  vacancy['requirements2_en'])
+
+
 def ids_and_scores(query, db_index, k=5):
     docs_and_scores = db_index.similarity_search_with_score(query, k=k)
     return [doc[1] for doc in docs_and_scores], \

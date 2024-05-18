@@ -7,10 +7,10 @@ system = re.sub(r'\s+', ' ', """You are a professional HR. You help candidates t
 
 assistant_0 = "['group of missing skills 1', 'group of missing skill 2', ... , 'group of missing skill 5']"
 
-def question_skills(resume_skills, vacancy_skills):
+def question_skills(resume_skills, vacancy_skills_and_requirements):
     return re.sub(r'\s+', ' ', f"""
     *** You have the skills of a candidate from a resume: {resume_skills}. ***
-    *** You also have the necessary skills listed in the vacancy: {vacancy_skills}. ***
+    *** You also have the necessary skills listed in the vacancy: {vacancy_skills_and_requirements}. ***
     
     Compare the skills of the candidate in the resume and the requirements from the vacancy.
     
@@ -23,14 +23,12 @@ def question_skills(resume_skills, vacancy_skills):
     The missing skills should be grouped by meanings and areas of activity and sorted by 
     importance (in the form of a Python list).
     
-    Answer all questions in Russian, with the exception of the words denoting the candidate's 
-    skills, if you write about them. So, answer in Russian, but if you use words denoting the 
-    candidate's skills, write skills in English.""")
+    Отвечай на русском языке. Если слова - навыки указаны на английском - выводи навыки на английском.""")
 
-def question_skills_2(resume_skills, vacancy_skills):
+def question_skills_2(resume_skills, vacancy_skills_and_requirements):
     return re.sub(r'\s+', ' ', f"""
     *** You have the skills of a candidate from a resume: {resume_skills}. ***
-    *** You also have the necessary skills listed in the vacancy: {vacancy_skills}. ***
+    *** You also have the necessary skills listed in the vacancy: {vacancy_skills_and_requirements}. ***
     Questions: Give me a list (in the form of a Python list), what skills does a candidate 
     lack in a resume compared to the necessary skills in a vacancy? Please answer the 
     question briefly, just list the candidate's missing skills (as a list in Python).""")
@@ -44,10 +42,10 @@ def message_content_01(resume, vacancy):
     skills, if you write about them. So, answer in Russian, but if you use words denoting the 
     candidate's skills, write skills in English.""")
 
-def question_skills_3(resume_skills, vacancy_skills):
+def question_skills_3(resume_skills, vacancy_skills_and_requirements):
     return re.sub(r'\s+', ' ', f"""
     *** You have the position and skills of a candidate from a resume: {resume_skills}. ***
-    *** You also have the necessary position and skills listed in the vacancy: {vacancy_skills}. ***  
+    *** You also have the necessary position and skills listed in the vacancy: {vacancy_skills_and_requirements}. ***  
       
     Compare the skills of the candidate in the resume and the requirements from the vacancy. 
          
@@ -63,9 +61,8 @@ def question_skills_3(resume_skills, vacancy_skills):
       Attitude to relocation. * AND Sammarize vacancy fields: Salary rate, Levels, Work Format, Required Location. 
       Answer in Russian. Insert a line break <br/> between the Resume and Vacancy answers. 
     
-    *** Answer all questions in Russian, with the exception of the words denoting the candidate's 
-      skills, if you write about them. So, answer in Russian, but if you use words denoting the 
-      candidate's skills, write skills in English. When displaying text, use HTML tags: <b>Bold text</b>, 
+    *** Отвечай на русском языке. Если слова - навыки указаны на английском - выводи навыки на английском.
+      When displaying text, use HTML tags: <b>Bold text</b>, 
       <i>italics</i>, <u>underscores</u> and other styles, as well as line breaks <br/>.
       After answering each question, put a line break tag: <br/>""")
 

@@ -1,6 +1,6 @@
 from processing.start_mongodb import resumes_collection
 from processing.vacansy_processing import db_index_vacancies
-from processing.resume_processing import processing_resume_and_similarity_vacancies, get_vacancy
+from processing.resume_processing import processing_resume_and_similarity_vacancies, get_vacancy, get_requirements
 from processing.report_processing import create_pdf
 from processing import prompts
 from settings import settings
@@ -15,8 +15,9 @@ AMOUNT = 0
 
 
 def print_tokens_count_and_price(completion):
-    # 07/03/2024 - https://openai.com/pricing
+    # https://openai.com/pricing
     # gpt-3.5-turbo-0125 - Input: $0.50 / 1M tokens - Output: $1.50 / 1M tokens
+    # gpt-4o - Input: $5 / 1M tokens - Output: $15 / 1M tokens
     price = 0.5 * completion.usage.prompt_tokens / 1e6 + \
             1.5 * completion.usage.completion_tokens / 1e6
     print(f'Использовано токенов: {completion.usage.prompt_tokens} + '
@@ -30,6 +31,7 @@ def print_tokens_count_and_price(completion):
 async def answer_gpt(messages, temp=0.3):
     completion = await AsyncOpenAI().chat.completions.create(
                        model="gpt-3.5-turbo-0125",
+                       # model="gpt-4o",
                        messages=messages,
                        temperature=temp)
     print_tokens_count_and_price(completion)
@@ -56,12 +58,13 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
     # ***********************************************************************
     for vacancy_id in scores_ids[1][:1]: # по выбранным вакансиям _id
         vacancy_skills, chosen_vacancy = await get_vacancy(vacancy_id)
+        vacancy_requirements = await get_requirements(vacancy_id)
 
         # Выявление недостающих навыков от ChatGPT ***************************
         message_0 = [{"role": "system", "content": prompts.system},
                      {'role': 'assistant', 'content': prompts.assistant_0},
                      {"role": "user",
-                     "content": f"{prompts.question_skills(resume_skills, vacancy_skills)}"}]
+                     "content": f"{prompts.question_skills(resume_skills, vacancy_requirements)}"}] # or vacancy_skills
         response_missing_skills = await answer_gpt(message_0, temp=0.3)
         list_missing_skills.append({vacancy_id: response_missing_skills})
 
@@ -74,7 +77,7 @@ async def get_answer_gpt(message: Message, resume_file_name, k=5):
         message_1 = [{"role": "system", "content": prompts.system},
                      {"role": "user",
                       "content": f"{prompts.message_content_01(r1 + r2 + r3, chosen_vacancy)}"
-                                 f"\n{prompts.question_skills_3(resume_skills, vacancy_skills)}"}]
+                                 f"\n{prompts.question_skills_3(resume_skills, vacancy_requirements)}"}] # or vacancy_skills
         response_conclusion = await answer_gpt(message_1, temp=0.3)
         list_conclusion.append({vacancy_id: response_conclusion})
 

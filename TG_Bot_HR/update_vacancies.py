@@ -36,10 +36,10 @@ def update_vacancies():
                     vacancy['_id'] = vacancy_file_name  # Добавляю поле "_id" с именем файла
 
                 # **************************************************************************************************
-                vacancy_skills = (', ').join(vacancy['skills'])
+                vacancy_skills = (', ').join(vacancy['data'].get('skills', ''))
                 position_skills = re.sub(r'\s+', ' ', f"""
                                   Position: {vacancy['data'].get('position', '')}. 
-                                  Skills: {(', ').join(vacancy['skills'])}. """)
+                                  Skills: {vacancy_skills}. """)
                 position_skills_en = transtator.translate(position_skills)
                 time.sleep(1) # пауза для более корректной работы между запросами к бесплатному переводчику
 
@@ -53,8 +53,7 @@ def update_vacancies():
                                     Add.Requirements: {(' ').join(vacancy['data']['additionalRequirements'])} """)
                     requirements2_en = transtator.translate(requirements2)
                     time.sleep(1)
-                except Exception as ex:
-                    # print(vacancy_file_name, 'Add.Requirements:', ex)
+                except Exception:
                     requirements2, requirements2_en = '', ''
 
                 try:
@@ -63,7 +62,7 @@ def update_vacancies():
                     salary = int(re.findall(r'\d+', f"{vacancy['data']['partnerRates']}")[0])
                     salary_ru = f"Ставка в час: {salary} рублей. "
                     salary_en = f"Salary rate per hour: {salary} rubles. "
-                except Exception as ex:
+                except Exception:
                     salary_ru, salary_en = '', ''
 
                 levels = f"Levels: {(', ').join(vacancy['data'].get('experienceLevels', ''))}. "
@@ -80,8 +79,7 @@ def update_vacancies():
                     tasks = re.sub(r'\s+', ' ', f"Tasks: {(' ').join(vacancy['data']['projectTasks'])} ")
                     tasks_en = transtator.translate(tasks)
                     time.sleep(1)
-                except Exception as ex:
-                    # print(vacancy_file_name, 'Tasks:', ex)
+                except Exception:
                     tasks, tasks_en = '', ''
 
                 # ********************************************************************************************
