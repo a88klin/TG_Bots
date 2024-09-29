@@ -1,0 +1,14 @@
+OPENAI_API_KEY= 
+TAVILY_API_KEY=
+LANGCHAIN_API_KEY=
+BOT_TOKEN=
+OPEN_WEATHER_TOKEN=
+# пути к сервисным файлам
+GOOGLE_SERVICE_STT=set/service.json
+GOOGLE_SERVICE_TAB=set/proj_tab.json
+GOOGLE_SERVICE_CALENDAR=set/service_calendar.json
+GOOGLE_CALENDAR_TOKEN=set/token_event.json
+# url таблицы (блокнота)
+LINK_NOTEPAD=https://docs.google.com/spreadsheets/d/...
+# список разрешенных телеграм id
+AllOWED_IDS=[111111111, ...]
