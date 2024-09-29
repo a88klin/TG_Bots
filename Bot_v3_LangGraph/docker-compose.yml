@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+
+  v003:
+    restart: always
+    build: /Projects/v003
