@@ -1,0 +1,12 @@
+OPENAI_API_KEY =
+TAVILY_API_KEY =
+LANGCHAIN_API_KEY =
+BOT_TOKEN =
+
+BASE_URL = http: // 127.0.0.1: 8000
+
+DB_USER = postgres
+DB_PASS = postgres
+DB_NAME = psql_db
+DB_HOST = localhost
+DB_PORT = 5432
